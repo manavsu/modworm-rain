@@ -10,7 +10,7 @@ from constants import *
 
 logging.basicConfig()
 log = logging.getLogger("EchoServer")
-log.setLevel(logging.INFO)
+log.setLevel(logging.WARNING)
 
 
 class EchoServer:

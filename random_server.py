@@ -12,7 +12,7 @@ from random import randint
 
 logging.basicConfig()
 log = logging.getLogger("RandomServer")
-log.setLevel(logging.INFO)
+log.setLevel(logging.WARNING)
 
 
 class RandomServer:
