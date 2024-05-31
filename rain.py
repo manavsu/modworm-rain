@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser(prog="rain", description="modbus server manager
 parser.add_argument("--version", action='version', version=VERSION)
 parser.add_argument("-k", "--kill", action='store_true', help="kill all daemonized servers.")
 parser.add_argument("-d", "--daemonize", action='store_true', help="daemonize the server and run in the background.")
+parser.add_argument("-q", "--quiet", action='store_true', help="suppress output.")
 parser.add_argument("--host", default="127.0.0.1", help="the host to listen on. default=127.0.0.1")
 parser.add_argument("--port", type=int, default=50902, help="the port to listen on. default=50902")
 parser.add_argument("--type", default="incrementing", help="the type of server to run. default=incrementing" +
@@ -66,7 +67,7 @@ parser.add_argument("--type", default="incrementing", help="the type of server t
                     "\n\taddr:0 (0x0000) -> incremented continuously" +
                     "\n\taddr:1-1000 (0x0001-0x03E7) -> echoed from analog output holding registers addr:1-1000 (0x0001-0x03E7)")
 
-def main(host, port, server_type, demonize):
+def main(host, port, server_type, demonize, quiet):
     if not garbage_checker.validate_ip(host):
         print(f"Invalid host: {host}")
     if not garbage_checker.validate_port(port):
@@ -87,15 +88,17 @@ def main(host, port, server_type, demonize):
         print(f"Invalid server type: {server_type}")
         return
     if not demonize:
-        print(f"Starting server on {host}:{port} type -> {server_type}")
+        if not quiet:
+            print(f"Starting server on {host}:{port} type -> {server_type}")
         start_rain(host, port, server_type)
     else:
-        subprocess.Popen([sys.executable, "--port", str(port), "--host", host, "--type", server_type])
-        print(f"Daemonized server created on {host}:{port} type -> {server_type}")
+        subprocess.Popen([sys.executable, "--port", str(port), "--host", host, "--type", server_type, "--quiet"])
+        if not quiet:
+            print(f"Daemonized server created on {host}:{port} type -> {server_type}")
 
 if __name__ == "__main__":
     args = parser.parse_args()
     if args.kill:
         kill(PROCESS_NAME)
     else:
-        main(host=args.host, port=args.port, server_type=args.type, demonize=args.daemonize)
+        main(host=args.host, port=args.port, server_type=args.type, demonize=args.daemonize, quiet=args.quiet)
