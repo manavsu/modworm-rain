@@ -1,0 +1,2 @@
+Create a way to individually track each sim
+spin up and stop sim via soil

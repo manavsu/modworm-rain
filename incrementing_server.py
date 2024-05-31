@@ -14,7 +14,6 @@ logging.basicConfig()
 log = logging.getLogger("IncrementingServer")
 log.setLevel(logging.INFO)
 
-
 class IncrementingServer:
     """
     A simple incrementing server for testing.
