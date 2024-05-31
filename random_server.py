@@ -44,6 +44,7 @@ class RandomServer:
                 co=create_datablock(1000),
                 hr=create_datablock(1000),
                 ir=create_datablock(1000),
+                zero_mode=True,
             )
         self.identity = ModbusDeviceIdentification(
             info_name={
@@ -72,14 +73,13 @@ class RandomServer:
     async def __random_loop(self) -> None:
         log.info("starting random function")
         while self.running:
-            random_values = [randint(0, 65535) for i in range(998)]
+            random_values = [randint(0, 65535) for i in range(999)]
             for slave_id in self.context.slaves():
                 slave:ModbusSlaveContext = self.context[slave_id]
                 slave.setValues(OUTPUT_COILS, 0, [slave.getValues(OUTPUT_COILS, 0, 1)[0] ^ 0x01])
                 slave.setValues(INPUT_CONTACTS, 0, slave.getValues(OUTPUT_COILS, 0, 1))
                 slave.setValues(HOLDING_REGISTERS, 0, [slave.getValues(HOLDING_REGISTERS, 0, 1)[0] + 1])
                 slave.setValues(INPUT_REGISTERS, 0, slave.getValues(HOLDING_REGISTERS, 0, 1))
-
 
                 slave.setValues(HOLDING_REGISTERS, 1, random_values)
                 slave.setValues(INPUT_REGISTERS, 1, random_values)

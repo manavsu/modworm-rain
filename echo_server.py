@@ -46,6 +46,7 @@ class EchoServer:
                 co=create_datablock(2000),
                 hr=create_datablock(2000),
                 ir=create_datablock(1000),
+                zero_mode=True,
             )
         self.identity = ModbusDeviceIdentification(
             info_name={
@@ -82,6 +83,7 @@ class EchoServer:
                 slave.setValues(INPUT_REGISTERS, 0, slave.getValues(HOLDING_REGISTERS, 0, 1))
 
                 values = slave.getValues(HOLDING_REGISTERS, 1, 999)
+
                 slave.setValues(HOLDING_REGISTERS, 1000, values)
                 slave.setValues(INPUT_REGISTERS, 1, values)
 

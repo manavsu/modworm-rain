@@ -33,7 +33,7 @@ class IncrementingServer:
         self.interval_seconds = interval_seconds
         self.address = (host, port)
         self.running = False
-        create_datablock = lambda cnt : ModbusSequentialDataBlock(0x0000, [0x0000] * cnt)
+        create_datablock = lambda cnt : ModbusSequentialDataBlock(0, [0x0000] * cnt)
         slave_contexts = {}
         for i in range(num_clients):
             slave_contexts[i] = ModbusSlaveContext(
@@ -41,6 +41,7 @@ class IncrementingServer:
                 co=create_datablock(1000),
                 hr=create_datablock(1000),
                 ir=create_datablock(1000),
+                zero_mode=True,
             )
         self.identity = ModbusDeviceIdentification(
             info_name={
@@ -59,15 +60,15 @@ class IncrementingServer:
         '''start the modbus server and begin generating numbers.'''
 
         self.running = True
-        await asyncio.gather(self.__random_loop(), self.server.serve_forever())
+        await asyncio.gather(self.__increment_loop(), self.server.serve_forever())
 
     async def stop(self):
         '''stop the modbus server.'''
         self.running = False
         await self.server.shutdown()
     
-    async def __random_loop(self) -> None:
-        log.info("starting random function")
+    async def __increment_loop(self) -> None:
+        log.info("starting incrementing function")
         while self.running:
             for slave_id in self.context.slaves():
                 slave:ModbusSlaveContext = self.context[slave_id]
@@ -76,9 +77,9 @@ class IncrementingServer:
                 slave.setValues(HOLDING_REGISTERS, 0, [slave.getValues(HOLDING_REGISTERS, 0, 1)[0] + 1])
                 slave.setValues(INPUT_REGISTERS, 0, slave.getValues(HOLDING_REGISTERS, 0, 1))
 
-                cnts = list(range(999))
-                slave.setValues(OUTPUT_COILS, 0, [(i + a) ^ 0x01 for a, i in zip(slave.getValues(OUTPUT_COILS, 1, 999), cnts)])
-                slave.setValues(INPUT_CONTACTS, 0, slave.getValues(OUTPUT_COILS, 1, 999))
-                slave.setValues(HOLDING_REGISTERS, 0, [a + i for i, a in zip(slave.getValues(HOLDING_REGISTERS, 0, 9999), cnts)])
-                slave.setValues(INPUT_REGISTERS, 0, slave.getValues(HOLDING_REGISTERS, 0, 1))
+                cnts = list(range(1, 1000))
+                slave.setValues(OUTPUT_COILS, 1, [(a + i) ^ 0x01 for a, i in zip(slave.getValues(OUTPUT_COILS, 1, 999), cnts)])
+                slave.setValues(INPUT_CONTACTS, 1, slave.getValues(OUTPUT_COILS, 1, 999))
+                slave.setValues(HOLDING_REGISTERS, 1, [(a + i & 0xFFFF) for i, a in zip(slave.getValues(HOLDING_REGISTERS, 1, 999), cnts)])
+                slave.setValues(INPUT_REGISTERS, 1, slave.getValues(HOLDING_REGISTERS, 1, 999))
             await asyncio.sleep(self.interval_seconds)
