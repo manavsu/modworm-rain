@@ -1,5 +1,4 @@
 
-import asyncio
 import argparse
 import garbage_checker
 import os

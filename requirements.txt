@@ -1,0 +1,4 @@
+psutil==5.9.8
+pyinstaller==6.7.0
+pymodbus==3.6.8
+types-psutil==5.9.5.20240516
