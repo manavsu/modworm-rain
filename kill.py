@@ -9,7 +9,7 @@ def find_pids_by_name(process_name):
     return [proc.info['pid'] for proc in psutil.process_iter(['pid', 'name']) if proc.info['name'] == process_name and proc.info['pid'] != current_pid and proc.info['pid'] != bootstrap_pid]
 
 def kill(process_name):
-    pids = find_pids_by_name(process_name)
+    pids = find_pids_by_name((process_name + ".exe") if os.name == 'nt' else process_name)
     for pid in pids:
         try:
             if os.name == 'nt':
