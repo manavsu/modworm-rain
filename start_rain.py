@@ -20,6 +20,7 @@ async def start_server(host, port, server_type):
     elif server_type == "random":
         server = RandomServer(host, port, 1)
     signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
 
     await server.start()
 
