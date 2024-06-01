@@ -78,7 +78,7 @@ def main(host, port, server_type, demonize, quiet):
                 print("You must be a root user to use a port below 1024.")
                 return
     
-    if port_scanner.scan_network(host, port):
+    if port_scanner.check_port(host, port):
         print(f"Port {port} is already in use.")
         return
         
