@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.WARNING)
 
 parser = argparse.ArgumentParser(prog="rain", description="modbus server manager for testing.", formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument("--version", action='version', version=VERSION)
-parser.add_argument("-k", "--kill", action='store_true', help="kill all daemonized servers.")
+parser.add_argument("-k", "--kill", action='store_true', help="kill all active servers.")
 parser.add_argument("-d", "--daemonize", action='store_true', help="daemonize the server and run in the background.")
 parser.add_argument("-q", "--quiet", action='store_true', help="suppress output.")
 parser.add_argument("--host", default="127.0.0.1", help="the host to listen on. default=127.0.0.1")
