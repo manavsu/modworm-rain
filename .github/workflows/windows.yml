@@ -1,4 +1,4 @@
-name: Python application
+name: windows
 
 on:
   workflow_dispatch:
