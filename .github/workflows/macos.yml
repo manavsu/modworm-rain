@@ -13,8 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
       with:
         python-version: "3.12"
     - name: Install dependencies
@@ -34,5 +34,5 @@ jobs:
     - name: Upload executable
       uses: actions/upload-artifact@v4
       with:
-        name: rain_macos
+        name: executable
         path: dist/
