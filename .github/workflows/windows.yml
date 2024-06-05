@@ -39,10 +39,10 @@ jobs:
 
     - name: Zip the artifacts
       run: |
-        Compress-Archive -Path dist\* -DestinationPath executable.zip
+        Compress-Archive -Path dist\* -DestinationPath rain_windows.zip
 
     - name: Upload executable zip
       uses: actions/upload-artifact@v4
       with:
-        name: executable
-        path: executable.zip
+        name: rain_windows
+        path: rain_windows.zip
