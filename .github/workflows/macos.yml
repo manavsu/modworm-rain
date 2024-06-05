@@ -31,8 +31,19 @@ jobs:
     - name: Package with PyInstaller
       run: |
         pyinstaller rain.spec
-    - name: Upload executable
+        
+    - name: Add README and LICENSE
+      run: |
+        cp README.md dist/
+        cp LICENSE.txt dist/
+
+    - name: Zip the artifacts
+      run: |
+        cd dist
+        zip -r ../executable.zip *
+
+    - name: Upload executable zip
       uses: actions/upload-artifact@v4
       with:
         name: executable
-        path: dist/
+        path: executable.zip
